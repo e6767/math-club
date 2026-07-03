@@ -33,6 +33,15 @@
         <p class="meta"><a href="/login">Log in</a> to RSVP.</p>
       <% } %>
 
+      <div class="attendance-row">
+        <% if (currentUser) { %>
+          <form method="POST" action="/events/<%= e.id %>/attend" class="inline-form">
+            <button type="submit" class="btn btn-small<%= attendedSet.has(e.id) ? ' btn-accent' : '' %>"><%= attendedSet.has(e.id) ? '✓ Attended' : 'Mark attended' %></button>
+          </form>
+        <% } %>
+        <span class="meta"><%= attendanceCounts[e.id] || 0 %> attended</span>
+      </div>
+
       <% if (currentUser && (currentUser.role === 'officer' || currentUser.role === 'admin')) { %>
         <div class="actions-row" style="margin-top:10px;">
           <a class="btn btn-small" href="/events/<%= e.id %>/edit">Edit</a>
@@ -52,6 +61,14 @@
     <div class="card">
       <h3><%= e.title %></h3>
       <p class="meta"><%= new Date(e.event_date).toLocaleString() %></p>
+      <div class="attendance-row">
+        <% if (currentUser) { %>
+          <form method="POST" action="/events/<%= e.id %>/attend" class="inline-form">
+            <button type="submit" class="btn btn-small<%= attendedSet.has(e.id) ? ' btn-accent' : '' %>"><%= attendedSet.has(e.id) ? '✓ Attended' : 'Mark attended' %></button>
+          </form>
+        <% } %>
+        <span class="meta"><%= attendanceCounts[e.id] || 0 %> attended</span>
+      </div>
     </div>
   <% }) %>
 <% } %>

@@ -15,12 +15,21 @@ module.exports = function () {
       .all();
 
     let rsvpMap = {};
+    const attendedSet = new Set();
     if (req.session.user) {
       const rows = db.prepare('SELECT event_id, status FROM rsvps WHERE user_id = ?').all(req.session.user.id);
       rows.forEach((r) => (rsvpMap[r.event_id] = r.status));
+      db.prepare('SELECT event_id FROM attendance WHERE user_id = ?')
+        .all(req.session.user.id)
+        .forEach((a) => attendedSet.add(a.event_id));
     }
 
-    res.render('events', { events, past, rsvpMap });
+    const attendanceCounts = {};
+    db.prepare('SELECT event_id, COUNT(*) AS c FROM attendance GROUP BY event_id')
+      .all()
+      .forEach((r) => (attendanceCounts[r.event_id] = r.c));
+
+    res.render('events', { events, past, rsvpMap, attendedSet, attendanceCounts });
   });
 
   router.get('/new', requireLogin, requireOfficer, (req, res) => {
@@ -76,7 +85,24 @@ module.exports = function () {
     res.redirect('/events');
   });
 
-  // Roster of who RSVP'd, for officers
+  // Toggle whether the current member attended this event.
+  router.post('/:id/attend', requireLogin, (req, res) => {
+    const eventId = req.params.id;
+    const userId = req.session.user.id;
+    const event = db.prepare('SELECT id FROM events WHERE id = ?').get(eventId);
+    if (!event) return res.status(404).render('error', { message: 'Event not found.' });
+    const existing = db
+      .prepare('SELECT id FROM attendance WHERE event_id = ? AND user_id = ?')
+      .get(eventId, userId);
+    if (existing) {
+      db.prepare('DELETE FROM attendance WHERE id = ?').run(existing.id);
+    } else {
+      db.prepare('INSERT INTO attendance (event_id, user_id) VALUES (?, ?)').run(eventId, userId);
+    }
+    res.redirect('/events');
+  });
+
+  // Roster of who RSVP'd and who attended, for officers
   router.get('/:id/attendees', requireLogin, requireOfficer, (req, res) => {
     const event = db.prepare('SELECT * FROM events WHERE id = ?').get(req.params.id);
     if (!event) return res.status(404).render('error', { message: 'Event not found.' });
@@ -85,7 +111,12 @@ module.exports = function () {
         `SELECT u.name, u.email, r.status FROM rsvps r JOIN users u ON u.id = r.user_id WHERE r.event_id = ? ORDER BY r.status, u.name`
       )
       .all(req.params.id);
-    res.render('admin/attendees', { event, attendees });
+    const attended = db
+      .prepare(
+        `SELECT u.name, u.email FROM attendance a JOIN users u ON u.id = a.user_id WHERE a.event_id = ? ORDER BY u.name`
+      )
+      .all(req.params.id);
+    res.render('admin/attendees', { event, attendees, attended });
   });
 
   return router;
