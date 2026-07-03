@@ -310,5 +310,9 @@ th { color: var(--text-muted); text-transform: uppercase; font-size: 0.75rem; le
 /* Q&A */
 .prewrap { white-space: pre-wrap; }
 .badge-solved { background: var(--success); color: #fff; margin-left: 8px; }
+.badge-open { background: var(--accent); color: var(--navy); margin-left: 8px; }
+.grade-form { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; align-items: center; }
+.grade-form input[type="number"] { width: 80px; }
+.grade-form input[type="text"] { flex: 1; min-width: 160px; }
 .card.answer.accepted { border-color: var(--success); box-shadow: 0 0 0 1px var(--success); }
 .accepted-label { color: var(--success); font-weight: bold; margin: 0 0 8px; }

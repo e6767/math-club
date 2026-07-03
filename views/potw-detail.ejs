@@ -1,0 +1,68 @@
+<%- include('partials/header', { title: problem.title }) %>
+
+<p class="meta"><a href="/potw">&larr; Problem of the Week</a></p>
+
+<div class="card">
+  <h1 style="margin-top:0;">
+    <%= problem.title %>
+    <% if (problem.active) { %><span class="badge badge-open">Open</span><% } else { %><span class="badge badge-member">Closed</span><% } %>
+  </h1>
+  <p class="meta"><%= problem.points %> points &middot; posted by <%= problem.author_name || 'Unknown' %> &middot; <%= submissionCount %> submission<%= submissionCount === 1 ? '' : 's' %></p>
+  <p class="prewrap"><%= problem.body %></p>
+  <% if (officer) { %>
+    <div class="actions-row" style="margin-top:12px; margin-bottom:0;">
+      <form method="POST" action="/potw/<%= problem.id %>/toggle" class="inline-form">
+        <button class="btn btn-small" type="submit"><%= problem.active ? 'Close submissions' : 'Reopen submissions' %></button>
+      </form>
+      <form method="POST" action="/potw/<%= problem.id %>/delete" class="inline-form" onsubmit="return confirm('Delete this problem and all submissions?');">
+        <button class="btn btn-small btn-danger" type="submit">Delete</button>
+      </form>
+    </div>
+  <% } %>
+</div>
+
+<% if (!officer) { %>
+  <h2>Your solution</h2>
+  <% if (mySubmission && mySubmission.awarded_points !== null) { %>
+    <div class="card answer accepted">
+      <p class="accepted-label">Graded: <%= mySubmission.awarded_points %> / <%= problem.points %> points</p>
+      <p class="prewrap"><%= mySubmission.body %></p>
+      <% if (mySubmission.feedback) { %><p class="meta">Feedback: <%= mySubmission.feedback %></p><% } %>
+    </div>
+  <% } %>
+  <% if (problem.active) { %>
+    <form class="stack" method="POST" action="/potw/<%= problem.id %>/submit">
+      <div>
+        <label for="body"><%= mySubmission ? 'Update your solution' : 'Write your solution' %></label>
+        <textarea id="body" name="body" rows="7" required><%= mySubmission ? mySubmission.body : '' %></textarea>
+      </div>
+      <p class="meta">One submission per problem — you can update it until it's graded or closed.</p>
+      <button class="btn btn-accent" type="submit"><%= mySubmission ? 'Update solution' : 'Submit solution' %></button>
+    </form>
+  <% } else if (mySubmission && mySubmission.awarded_points === null) { %>
+    <div class="card"><p class="prewrap"><%= mySubmission.body %></p><p class="meta">Submitted — awaiting grading.</p></div>
+  <% } else if (!mySubmission) { %>
+    <p class="empty-state">This problem is closed and you didn't submit a solution.</p>
+  <% } %>
+<% } else { %>
+  <h2>Submissions (<%= submissions.length %>)</h2>
+  <% if (submissions.length === 0) { %>
+    <p class="empty-state">No submissions yet.</p>
+  <% } else { %>
+    <% submissions.forEach(function(s){ %>
+      <div class="card">
+        <p class="meta"><strong><%= s.author_name %></strong>
+          <% if (s.awarded_points !== null) { %>&middot; <span class="rsvp-going">graded: <%= s.awarded_points %>/<%= problem.points %></span><% } else { %>&middot; <span class="rsvp-maybe">ungraded</span><% } %>
+        </p>
+        <p class="prewrap"><%= s.body %></p>
+        <form class="grade-form" method="POST" action="/potw/<%= problem.id %>/submissions/<%= s.id %>/grade">
+          <input type="number" name="points" min="0" max="<%= problem.points %>" value="<%= s.awarded_points !== null ? s.awarded_points : '' %>" placeholder="pts" />
+          <input type="text" name="feedback" value="<%= s.feedback || '' %>" placeholder="Feedback (optional)" />
+          <button class="btn btn-small" type="submit">Save grade</button>
+        </form>
+      </div>
+    <% }) %>
+  <% } %>
+<% } %>
+
+<%- include('partials/footer') %>

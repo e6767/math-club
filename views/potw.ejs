@@ -1,0 +1,37 @@
+<%- include('partials/header', { title: 'Problem of the Week' }) %>
+
+<div class="cal-header">
+  <h1 class="cal-title">Problem of the Week</h1>
+  <a class="btn btn-small" href="/potw/leaderboard">🏆 Leaderboard</a>
+</div>
+<p class="meta">Solve the weekly problem, submit your solution, and earn points toward the leaderboard.</p>
+
+<% if (currentUser.role === 'officer' || currentUser.role === 'admin') { %>
+  <div class="actions-row"><a class="btn btn-accent" href="/potw/new">+ New problem</a></div>
+<% } %>
+
+<% if (problems.length === 0) { %>
+  <p class="empty-state">No problems posted yet.</p>
+<% } else { %>
+  <% problems.forEach(function(p){ %>
+    <div class="card">
+      <h3 style="margin-bottom:4px;">
+        <a href="/potw/<%= p.id %>"><%= p.title %></a>
+        <% if (p.active) { %><span class="badge badge-open">Open</span><% } else { %><span class="badge badge-member">Closed</span><% } %>
+      </h3>
+      <p class="meta">
+        <%= p.points %> pts &middot; <%= p.submission_count %> submission<%= p.submission_count === 1 ? '' : 's' %>
+        <% if (mine[p.id]) { %>
+          &middot;
+          <% if (mine[p.id].awarded_points !== null) { %>
+            <span class="rsvp-going">You earned <%= mine[p.id].awarded_points %> pts</span>
+          <% } else { %>
+            <span class="rsvp-maybe">You submitted (ungraded)</span>
+          <% } %>
+        <% } %>
+      </p>
+    </div>
+  <% }) %>
+<% } %>
+
+<%- include('partials/footer') %>

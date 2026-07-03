@@ -1,0 +1,23 @@
+<%- include('partials/header', { title: 'New problem' }) %>
+
+<p class="meta"><a href="/potw">&larr; Problem of the Week</a></p>
+<h1>New problem</h1>
+<% if (error) { %><div class="error-box"><%= error %></div><% } %>
+
+<form class="stack" method="POST" action="/potw/new">
+  <div>
+    <label for="title">Title</label>
+    <input type="text" id="title" name="title" value="<%= problem.title || '' %>" required />
+  </div>
+  <div>
+    <label for="body">Problem statement</label>
+    <textarea id="body" name="body" rows="8" required><%= problem.body || '' %></textarea>
+  </div>
+  <div>
+    <label for="points">Points</label>
+    <input type="number" id="points" name="points" min="0" value="<%= problem.points || 10 %>" style="max-width:120px;" />
+  </div>
+  <button class="btn btn-accent" type="submit">Post problem</button>
+</form>
+
+<%- include('partials/footer') %>

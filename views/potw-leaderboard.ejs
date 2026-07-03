@@ -1,0 +1,24 @@
+<%- include('partials/header', { title: 'Leaderboard' }) %>
+
+<p class="meta"><a href="/potw">&larr; Problem of the Week</a></p>
+<h1>🏆 Leaderboard</h1>
+
+<% if (rows.length === 0) { %>
+  <p class="empty-state">No points awarded yet. Solve a problem to get on the board!</p>
+<% } else { %>
+  <table>
+    <thead><tr><th>#</th><th>Member</th><th>Problems solved</th><th>Points</th></tr></thead>
+    <tbody>
+      <% rows.forEach(function(r, i){ %>
+        <tr>
+          <td><%= i + 1 %></td>
+          <td><%= r.name %></td>
+          <td><%= r.solved %></td>
+          <td><strong><%= r.points %></strong></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+<% } %>
+
+<%- include('partials/footer') %>

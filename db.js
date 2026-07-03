@@ -113,6 +113,33 @@ CREATE TABLE IF NOT EXISTS attendance (
   FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+-- Problem of the Week: officers post problems, members submit solutions,
+-- officers grade them, and awarded points drive a leaderboard.
+CREATE TABLE IF NOT EXISTS problems (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  title TEXT NOT NULL,
+  body TEXT NOT NULL,
+  points INTEGER NOT NULL DEFAULT 10,
+  active INTEGER NOT NULL DEFAULT 1, -- 1 = accepting submissions
+  created_by INTEGER,
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
+);
+
+CREATE TABLE IF NOT EXISTS submissions (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  problem_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL,
+  body TEXT NOT NULL,
+  awarded_points INTEGER, -- NULL = not graded yet
+  feedback TEXT,
+  graded_by INTEGER,
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  UNIQUE(problem_id, user_id), -- one (updatable) submission per member per problem
+  FOREIGN KEY (problem_id) REFERENCES problems(id) ON DELETE CASCADE,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
 `);
 
 module.exports = db;
