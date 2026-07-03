@@ -1,0 +1,25 @@
+<%- include('../partials/header', { title: 'RSVPs · ' + event.title }) %>
+
+<h1>RSVPs for <%= event.title %></h1>
+<p class="meta"><%= new Date(event.event_date).toLocaleString() %></p>
+
+<% if (attendees.length === 0) { %>
+  <p class="empty-state">No RSVPs yet.</p>
+<% } else { %>
+  <table>
+    <thead><tr><th>Name</th><th>Email</th><th>Status</th></tr></thead>
+    <tbody>
+      <% attendees.forEach(function(a) { %>
+        <tr>
+          <td><%= a.name %></td>
+          <td><%= a.email %></td>
+          <td><span class="rsvp-<%= a.status %>"><%= a.status.replace('_',' ') %></span></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+<% } %>
+
+<p><a href="/events">&larr; Back to events</a></p>
+
+<%- include('../partials/footer') %>

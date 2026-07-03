@@ -1,0 +1,28 @@
+<%- include('partials/header', { title: 'Resources' }) %>
+
+<h1>Resources</h1>
+<% if (currentUser.role === 'officer' || currentUser.role === 'admin') { %>
+  <div class="actions-row"><a class="btn btn-accent" href="/resources/new">+ New resource</a></div>
+<% } %>
+
+<% const categories = Object.keys(byCategory); %>
+<% if (categories.length === 0) { %>
+  <p class="empty-state">No resources posted yet.</p>
+<% } else { %>
+  <% categories.forEach(function(cat) { %>
+    <h2 class="category-heading"><%= cat %></h2>
+    <% byCategory[cat].forEach(function(r) { %>
+      <div class="card">
+        <h3><a href="<%= r.url %>" target="_blank" rel="noopener noreferrer"><%= r.title %></a></h3>
+        <% if (r.description) { %><p><%= r.description %></p><% } %>
+        <% if (currentUser.role === 'officer' || currentUser.role === 'admin') { %>
+          <form method="POST" action="/resources/<%= r.id %>/delete" onsubmit="return confirm('Delete this resource?');">
+            <button class="btn btn-small btn-danger" type="submit">Delete</button>
+          </form>
+        <% } %>
+      </div>
+    <% }) %>
+  <% }) %>
+<% } %>
+
+<%- include('partials/footer') %>

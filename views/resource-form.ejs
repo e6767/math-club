@@ -1,0 +1,25 @@
+<%- include('partials/header', { title: 'New resource' }) %>
+
+<h1>New resource</h1>
+<% if (error) { %><div class="error-box"><%= error %></div><% } %>
+<form class="stack" method="POST" action="/resources/new">
+  <div>
+    <label for="title">Title</label>
+    <input type="text" id="title" name="title" value="<%= resource.title || '' %>" required />
+  </div>
+  <div>
+    <label for="url">URL (Google Drive link, PDF link, etc.)</label>
+    <input type="url" id="url" name="url" value="<%= resource.url || '' %>" required />
+  </div>
+  <div>
+    <label for="category">Category</label>
+    <input type="text" id="category" name="category" value="<%= resource.category || '' %>" placeholder="e.g. AMC Practice, Number Theory" />
+  </div>
+  <div>
+    <label for="description">Description</label>
+    <textarea id="description" name="description"><%= resource.description || '' %></textarea>
+  </div>
+  <button class="btn btn-accent" type="submit">Add resource</button>
+</form>
+
+<%- include('partials/footer') %>

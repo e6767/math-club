@@ -1,0 +1,35 @@
+<%- include('../partials/header', { title: 'Roster' }) %>
+
+<h1>Member roster</h1>
+<p class="meta"><%= users.length %> total members</p>
+
+<table>
+  <thead>
+    <tr><th>Name</th><th>Email</th><th>Grade</th><th>Role</th><th>Joined</th><th>Actions</th></tr>
+  </thead>
+  <tbody>
+    <% users.forEach(function(u) { %>
+      <tr>
+        <td><%= u.name %></td>
+        <td><%= u.email %></td>
+        <td><%= u.grade || '—' %></td>
+        <td><span class="badge badge-<%= u.role %>"><%= u.role %></span></td>
+        <td><%= new Date(u.created_at).toLocaleDateString() %></td>
+        <td>
+          <form method="POST" action="/admin/roster/<%= u.id %>/role" class="inline-form">
+            <select name="role" onchange="this.form.submit()">
+              <option value="member" <%= u.role === 'member' ? 'selected' : '' %>>Member</option>
+              <option value="officer" <%= u.role === 'officer' ? 'selected' : '' %>>Officer</option>
+              <option value="admin" <%= u.role === 'admin' ? 'selected' : '' %>>Admin</option>
+            </select>
+          </form>
+          <form method="POST" action="/admin/roster/<%= u.id %>/delete" class="inline-form" onsubmit="return confirm('Remove this member?');">
+            <button class="btn btn-small btn-danger" type="submit">Remove</button>
+          </form>
+        </td>
+      </tr>
+    <% }) %>
+  </tbody>
+</table>
+
+<%- include('../partials/footer') %>

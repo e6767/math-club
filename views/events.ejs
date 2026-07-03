@@ -1,0 +1,59 @@
+<%- include('partials/header', { title: 'Events' }) %>
+
+<h1>Events</h1>
+<% if (currentUser && (currentUser.role === 'officer' || currentUser.role === 'admin')) { %>
+  <div class="actions-row"><a class="btn btn-accent" href="/events/new">+ New event</a></div>
+<% } %>
+
+<% if (events.length === 0) { %>
+  <p class="empty-state">No upcoming events yet.</p>
+<% } else { %>
+  <% events.forEach(function(e) { %>
+    <div class="card">
+      <h3><%= e.title %></h3>
+      <p class="meta"><%= new Date(e.event_date).toLocaleString() %><% if (e.location) { %> &middot; <%= e.location %><% } %></p>
+      <% if (e.description) { %><p><%= e.description %></p><% } %>
+
+      <% if (currentUser) { %>
+        <div class="rsvp-buttons">
+          <form method="POST" action="/events/<%= e.id %>/rsvp" class="inline-form">
+            <input type="hidden" name="status" value="going" />
+            <button type="submit" class="<%= rsvpMap[e.id] === 'going' ? 'active-going' : '' %>">Going</button>
+          </form>
+          <form method="POST" action="/events/<%= e.id %>/rsvp" class="inline-form">
+            <input type="hidden" name="status" value="maybe" />
+            <button type="submit" class="<%= rsvpMap[e.id] === 'maybe' ? 'active-maybe' : '' %>">Maybe</button>
+          </form>
+          <form method="POST" action="/events/<%= e.id %>/rsvp" class="inline-form">
+            <input type="hidden" name="status" value="not_going" />
+            <button type="submit" class="<%= rsvpMap[e.id] === 'not_going' ? 'active-not_going' : '' %>">Can't go</button>
+          </form>
+        </div>
+      <% } else { %>
+        <p class="meta"><a href="/login">Log in</a> to RSVP.</p>
+      <% } %>
+
+      <% if (currentUser && (currentUser.role === 'officer' || currentUser.role === 'admin')) { %>
+        <div class="actions-row" style="margin-top:10px;">
+          <a class="btn btn-small" href="/events/<%= e.id %>/edit">Edit</a>
+          <a class="btn btn-small" href="/events/<%= e.id %>/attendees">View RSVPs</a>
+          <form method="POST" action="/events/<%= e.id %>/delete" class="inline-form" onsubmit="return confirm('Delete this event?');">
+            <button class="btn btn-small btn-danger" type="submit">Delete</button>
+          </form>
+        </div>
+      <% } %>
+    </div>
+  <% }) %>
+<% } %>
+
+<% if (past.length > 0) { %>
+  <h2>Past events</h2>
+  <% past.forEach(function(e) { %>
+    <div class="card">
+      <h3><%= e.title %></h3>
+      <p class="meta"><%= new Date(e.event_date).toLocaleString() %></p>
+    </div>
+  <% }) %>
+<% } %>
+
+<%- include('partials/footer') %>

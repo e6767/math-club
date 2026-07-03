@@ -1,0 +1,25 @@
+<%- include('partials/header', { title: 'Announcements' }) %>
+
+<h1>Announcements</h1>
+<% if (currentUser && (currentUser.role === 'officer' || currentUser.role === 'admin')) { %>
+  <div class="actions-row"><a class="btn btn-accent" href="/announcements/new">+ New announcement</a></div>
+<% } %>
+
+<% if (announcements.length === 0) { %>
+  <p class="empty-state">Nothing posted yet.</p>
+<% } else { %>
+  <% announcements.forEach(function(a) { %>
+    <div class="card">
+      <h3><%= a.title %></h3>
+      <p class="meta">Posted <%= new Date(a.created_at).toLocaleDateString() %><% if (a.author_name) { %> by <%= a.author_name %><% } %></p>
+      <p><%= a.body %></p>
+      <% if (currentUser && (currentUser.role === 'officer' || currentUser.role === 'admin')) { %>
+        <form method="POST" action="/announcements/<%= a.id %>/delete" onsubmit="return confirm('Delete this announcement?');">
+          <button class="btn btn-small btn-danger" type="submit">Delete</button>
+        </form>
+      <% } %>
+    </div>
+  <% }) %>
+<% } %>
+
+<%- include('partials/footer') %>

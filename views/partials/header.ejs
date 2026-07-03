@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= typeof title !== 'undefined' ? title + ' · ' + clubName : clubName %></title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="/" class="brand">&#8721; <%= clubName %></a>
+      <nav class="main-nav">
+        <a href="/events">Events</a>
+        <a href="/announcements">Announcements</a>
+        <% if (currentUser) { %>
+          <a href="/resources">Resources</a>
+          <a href="/dashboard">Dashboard</a>
+          <% if (currentUser.role === 'admin') { %>
+            <a href="/admin/roster">Roster</a>
+          <% } %>
+          <form action="/logout" method="POST" class="inline-form">
+            <button class="link-button" type="submit">Log out (<%= currentUser.name %>)</button>
+          </form>
+        <% } else { %>
+          <a href="/login">Log in</a>
+          <a href="/register" class="btn-nav">Join</a>
+        <% } %>
+      </nav>
+    </div>
+  </header>
+  <main class="container">

@@ -1,0 +1,25 @@
+<%- include('partials/header', { title: mode === 'create' ? 'New event' : 'Edit event' }) %>
+
+<h1><%= mode === 'create' ? 'New event' : 'Edit event' %></h1>
+<% if (error) { %><div class="error-box"><%= error %></div><% } %>
+<form class="stack" method="POST" action="<%= mode === 'create' ? '/events/new' : '/events/' + event.id + '/edit' %>">
+  <div>
+    <label for="title">Title</label>
+    <input type="text" id="title" name="title" value="<%= event.title || '' %>" required />
+  </div>
+  <div>
+    <label for="event_date">Date &amp; time</label>
+    <input type="datetime-local" id="event_date" name="event_date" value="<%= event.event_date ? event.event_date.slice(0,16) : '' %>" required />
+  </div>
+  <div>
+    <label for="location">Location</label>
+    <input type="text" id="location" name="location" value="<%= event.location || '' %>" placeholder="Room 204" />
+  </div>
+  <div>
+    <label for="description">Description</label>
+    <textarea id="description" name="description"><%= event.description || '' %></textarea>
+  </div>
+  <button class="btn btn-accent" type="submit"><%= mode === 'create' ? 'Create event' : 'Save changes' %></button>
+</form>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,38 @@
+<%- include('partials/header', { title: 'Home' }) %>
+
+<section class="hero">
+  <h1>&#8721; <%= clubName %></h1>
+  <p>Problem sets, competitions, and a community of people who think a hard proof is a good time.</p>
+  <% if (!currentUser) { %>
+    <a href="/register" class="btn btn-accent">Become a member</a>
+  <% } %>
+</section>
+
+<h2>Upcoming events</h2>
+<% if (upcoming.length === 0) { %>
+  <p class="empty-state">No events scheduled yet. Check back soon.</p>
+<% } else { %>
+  <% upcoming.forEach(function(e) { %>
+    <div class="card">
+      <h3><%= e.title %></h3>
+      <p class="meta"><%= new Date(e.event_date).toLocaleString() %><% if (e.location) { %> &middot; <%= e.location %><% } %></p>
+      <% if (e.description) { %><p><%= e.description %></p><% } %>
+    </div>
+  <% }) %>
+  <p><a href="/events">See all events &rarr;</a></p>
+<% } %>
+
+<h2>Latest announcements</h2>
+<% if (latestAnnouncements.length === 0) { %>
+  <p class="empty-state">Nothing posted yet.</p>
+<% } else { %>
+  <% latestAnnouncements.forEach(function(a) { %>
+    <div class="card">
+      <h3><%= a.title %></h3>
+      <p><%= a.body %></p>
+    </div>
+  <% }) %>
+  <p><a href="/announcements">See all announcements &rarr;</a></p>
+<% } %>
+
+<%- include('partials/footer') %>

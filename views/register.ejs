@@ -1,0 +1,36 @@
+<%- include('partials/header', { title: 'Join' }) %>
+
+<h1>Join <%= clubName %></h1>
+<% if (error) { %><div class="error-box"><%= error %></div><% } %>
+<form class="stack" method="POST" action="/register">
+  <div>
+    <label for="name">Full name</label>
+    <input type="text" id="name" name="name" value="<%= form.name || '' %>" required />
+  </div>
+  <div>
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" value="<%= form.email || '' %>" required />
+  </div>
+  <div>
+    <label for="grade">Grade</label>
+    <select id="grade" name="grade">
+      <option value="">Select grade</option>
+      <option value="9" <%= form.grade === '9' ? 'selected' : '' %>>9th</option>
+      <option value="10" <%= form.grade === '10' ? 'selected' : '' %>>10th</option>
+      <option value="11" <%= form.grade === '11' ? 'selected' : '' %>>11th</option>
+      <option value="12" <%= form.grade === '12' ? 'selected' : '' %>>12th</option>
+    </select>
+  </div>
+  <div>
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" minlength="8" required />
+  </div>
+  <div>
+    <label for="confirmPassword">Confirm password</label>
+    <input type="password" id="confirmPassword" name="confirmPassword" minlength="8" required />
+  </div>
+  <button class="btn btn-accent" type="submit">Create account</button>
+</form>
+<p class="meta">Already have an account? <a href="/login">Log in</a></p>
+
+<%- include('partials/footer') %>

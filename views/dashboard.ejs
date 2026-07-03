@@ -1,0 +1,43 @@
+<%- include('partials/header', { title: 'Dashboard' }) %>
+
+<h1>Welcome, <%= currentUser.name %></h1>
+<p class="meta">Role: <span class="badge badge-<%= currentUser.role %>"><%= currentUser.role %></span></p>
+
+<h2>Your upcoming RSVPs</h2>
+<% if (myEvents.length === 0) { %>
+  <p class="empty-state">You haven't RSVP'd to any upcoming events. <a href="/events">Browse events</a>.</p>
+<% } else { %>
+  <% myEvents.forEach(function(e) { %>
+    <div class="card">
+      <h3><%= e.title %></h3>
+      <p class="meta"><%= new Date(e.event_date).toLocaleString() %><% if (e.location) { %> &middot; <%= e.location %><% } %></p>
+      <p>Your status: <span class="rsvp-<%= e.status %>"><%= e.status.replace('_', ' ') %></span></p>
+    </div>
+  <% }) %>
+<% } %>
+
+<h2>Recent announcements</h2>
+<% if (announcements.length === 0) { %>
+  <p class="empty-state">Nothing posted yet.</p>
+<% } else { %>
+  <% announcements.forEach(function(a) { %>
+    <div class="card">
+      <h3><%= a.title %></h3>
+      <p><%= a.body %></p>
+    </div>
+  <% }) %>
+<% } %>
+
+<% if (currentUser.role === 'officer' || currentUser.role === 'admin') { %>
+  <h2>Officer tools</h2>
+  <div class="actions-row">
+    <a class="btn" href="/events/new">+ New event</a>
+    <a class="btn" href="/announcements/new">+ New announcement</a>
+    <a class="btn" href="/resources/new">+ New resource</a>
+    <% if (currentUser.role === 'admin') { %>
+      <a class="btn" href="/admin/roster">Manage roster</a>
+    <% } %>
+  </div>
+<% } %>
+
+<%- include('partials/footer') %>

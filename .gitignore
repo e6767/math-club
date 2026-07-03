@@ -1,0 +1,8 @@
+node_modules/
+.env
+# runtime data (SQLite db + WAL/shm journals) — created automatically
+data/
+*.log
+# local editor / tooling config
+.claude/
+.DS_Store
