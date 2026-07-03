@@ -33,6 +33,7 @@ app.use(attachUser(db));
 // Routes
 app.use('/', require('./routes/auth')());
 app.use('/events', require('./routes/events')());
+app.use('/calendar', require('./routes/calendar')());
 app.use('/resources', require('./routes/resources')());
 app.use('/announcements', require('./routes/announcements')());
 app.use('/mail', require('./routes/mail')());

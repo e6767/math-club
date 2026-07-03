@@ -1,0 +1,37 @@
+<%- include('partials/header', { title: 'Calendar' }) %>
+
+<div class="cal-header">
+  <h1 class="cal-title">Calendar</h1>
+  <div class="cal-nav">
+    <a class="btn btn-small" href="/calendar?year=<%= prev.year %>&month=<%= prev.month %>">&larr; Prev</a>
+    <span class="cal-month"><%= monthLabel %></span>
+    <a class="btn btn-small" href="/calendar?year=<%= next.year %>&month=<%= next.month %>">Next &rarr;</a>
+  </div>
+</div>
+
+<div class="cal-grid">
+  <% ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach(function(d){ %>
+    <div class="cal-dow"><%= d %></div>
+  <% }) %>
+
+  <% weeks.forEach(function(week){ %>
+    <% week.forEach(function(day){ %>
+      <% if (day === null) { %>
+        <div class="cal-cell empty"></div>
+      <% } else { %>
+        <div class="cal-cell<%= day === todayDay ? ' today' : '' %>">
+          <div class="cal-daynum"><%= day %></div>
+          <% (byDay[day] || []).forEach(function(e){ %>
+            <a class="cal-event" href="/events" title="<%= e.title %><%= e.location ? ' — ' + e.location : '' %>"><%= e.title %></a>
+          <% }) %>
+        </div>
+      <% } %>
+    <% }) %>
+  <% }) %>
+</div>
+
+<% if (eventCount === 0) { %>
+  <p class="empty-state">No events this month. Use Prev / Next to browse other months.</p>
+<% } %>
+
+<%- include('partials/footer') %>
