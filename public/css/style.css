@@ -292,3 +292,9 @@ th { color: var(--text-muted); text-transform: uppercase; font-size: 0.75rem; le
   .cal-cell { min-height: 62px; }
   .cal-event { font-size: 0.6rem; }
 }
+
+/* Q&A */
+.prewrap { white-space: pre-wrap; }
+.badge-solved { background: var(--success); color: #fff; margin-left: 8px; }
+.card.answer.accepted { border-color: var(--success); box-shadow: 0 0 0 1px var(--success); }
+.accepted-label { color: var(--success); font-weight: bold; margin: 0 0 8px; }

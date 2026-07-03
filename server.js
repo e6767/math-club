@@ -36,6 +36,7 @@ app.use('/events', require('./routes/events')());
 app.use('/calendar', require('./routes/calendar')());
 app.use('/resources', require('./routes/resources')());
 app.use('/announcements', require('./routes/announcements')());
+app.use('/questions', require('./routes/questions')());
 app.use('/mail', require('./routes/mail')());
 app.use('/admin', require('./routes/admin')());
 

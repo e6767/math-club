@@ -1,0 +1,22 @@
+<%- include('partials/header', { title: 'Q&A' }) %>
+
+<h1>Questions &amp; help</h1>
+<p class="meta">Stuck on a problem? Ask the club. Know the answer? Help someone out.</p>
+
+<div class="actions-row"><a class="btn btn-accent" href="/questions/new">+ Ask a question</a></div>
+
+<% if (questions.length === 0) { %>
+  <p class="empty-state">No questions yet. Be the first to ask!</p>
+<% } else { %>
+  <% questions.forEach(function(q){ %>
+    <div class="card">
+      <h3 style="margin-bottom:4px;">
+        <a href="/questions/<%= q.id %>"><%= q.title %></a>
+        <% if (q.solved) { %><span class="badge badge-solved">Solved</span><% } %>
+      </h3>
+      <p class="meta">Asked by <%= q.asker_name || 'Unknown' %> &middot; <%= q.answer_count %> answer<%= q.answer_count === 1 ? '' : 's' %></p>
+    </div>
+  <% }) %>
+<% } %>
+
+<%- include('partials/footer') %>

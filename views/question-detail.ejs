@@ -1,0 +1,52 @@
+<%- include('partials/header', { title: question.title }) %>
+
+<p class="meta"><a href="/questions">&larr; All questions</a></p>
+
+<div class="card">
+  <h1 style="margin-top:0;">
+    <%= question.title %>
+    <% if (question.solved) { %><span class="badge badge-solved">Solved</span><% } %>
+  </h1>
+  <p class="meta">Asked by <%= question.asker_name || 'Unknown' %></p>
+  <p class="prewrap"><%= question.body %></p>
+  <% if (canManage) { %>
+    <div class="actions-row" style="margin-top:12px; margin-bottom:0;">
+      <% if (question.solved) { %>
+        <form method="POST" action="/questions/<%= question.id %>/reopen" class="inline-form">
+          <button class="btn btn-small" type="submit">Mark unsolved</button>
+        </form>
+      <% } %>
+      <form method="POST" action="/questions/<%= question.id %>/delete" class="inline-form"
+        onsubmit="return confirm('Delete this question and all its answers?');">
+        <button class="btn btn-small btn-danger" type="submit">Delete</button>
+      </form>
+    </div>
+  <% } %>
+</div>
+
+<h2><%= answers.length %> answer<%= answers.length === 1 ? '' : 's' %></h2>
+<% answers.forEach(function(a){ %>
+  <div class="card answer<%= a.id === question.accepted_answer_id ? ' accepted' : '' %>">
+    <% if (a.id === question.accepted_answer_id) { %>
+      <p class="accepted-label">&#10003; Accepted answer</p>
+    <% } %>
+    <p class="prewrap"><%= a.body %></p>
+    <p class="meta">&mdash; <%= a.author_name || 'Unknown' %></p>
+    <% if (canManage && a.id !== question.accepted_answer_id) { %>
+      <form method="POST" action="/questions/<%= question.id %>/answers/<%= a.id %>/accept" class="inline-form">
+        <button class="btn btn-small" type="submit">Accept this answer</button>
+      </form>
+    <% } %>
+  </div>
+<% }) %>
+
+<h2>Your answer</h2>
+<form class="stack" method="POST" action="/questions/<%= question.id %>/answers">
+  <div>
+    <label for="body">Help solve it</label>
+    <textarea id="body" name="body" rows="6" placeholder="Share your solution or a hint..." required></textarea>
+  </div>
+  <button class="btn btn-accent" type="submit">Post answer</button>
+</form>
+
+<%- include('partials/footer') %>

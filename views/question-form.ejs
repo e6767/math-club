@@ -1,0 +1,21 @@
+<%- include('partials/header', { title: 'Ask a question' }) %>
+
+<p class="meta"><a href="/questions">&larr; All questions</a></p>
+<h1>Ask a question</h1>
+<% if (error) { %><div class="error-box"><%= error %></div><% } %>
+
+<form class="stack" method="POST" action="/questions/new">
+  <div>
+    <label for="title">Title</label>
+    <input type="text" id="title" name="title" value="<%= question.title || '' %>"
+      placeholder="e.g. How do I approach this AMC combinatorics problem?" required />
+  </div>
+  <div>
+    <label for="body">Details</label>
+    <textarea id="body" name="body" rows="8"
+      placeholder="Describe the problem, what you've tried, and where you're stuck..." required><%= question.body || '' %></textarea>
+  </div>
+  <button class="btn btn-accent" type="submit">Post question</button>
+</form>
+
+<%- include('partials/footer') %>
