@@ -3,6 +3,9 @@
 <h1>Member roster</h1>
 <p class="meta"><%= users.length %> total members</p>
 
+<% if (typeof error !== 'undefined' && error) { %><div class="error-box"><%= error %></div><% } %>
+<% if (typeof notice !== 'undefined' && notice) { %><div class="notice-box"><%= notice %></div><% } %>
+
 <table>
   <thead>
     <tr><th>Name</th><th>Email</th><th>Grade</th><th>Role</th><th>Joined</th><th>Actions</th></tr>
@@ -25,6 +28,10 @@
           </form>
           <form method="POST" action="/admin/roster/<%= u.id %>/delete" class="inline-form" onsubmit="return confirm('Remove this member?');">
             <button class="btn btn-small btn-danger" type="submit">Remove</button>
+          </form>
+          <form method="POST" action="/admin/roster/<%= u.id %>/password" class="reset-pw-form" onsubmit="return confirm('Set a new password for <%= u.name %>?');">
+            <input type="password" name="password" placeholder="New password" minlength="8" required />
+            <button class="btn btn-small" type="submit">Set password</button>
           </form>
         </td>
       </tr>

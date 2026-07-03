@@ -6,11 +6,15 @@ const path = require('path');
 const db = require('./db');
 const { attachUser, requireLogin } = require('./middleware/auth');
 
+const FileStore = require('session-file-store')(session);
+
 const app = express();
 const PORT = process.env.PORT || 3000;
+const isProd = process.env.NODE_ENV === 'production';
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+app.set('trust proxy', 1); // behind nginx; needed for secure cookies + req.protocol
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -18,12 +22,21 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(
   session({
+    // Persist sessions to disk so a restart/deploy doesn't log everyone out.
+    store: new FileStore({
+      path: path.join(__dirname, 'data', 'sessions'),
+      ttl: 60 * 60 * 24 * 30,
+      retries: 1,
+      logFn: function () {},
+    }),
     secret: process.env.SESSION_SECRET || 'dev-secret-change-me',
     resave: false,
     saveUninitialized: false,
     cookie: {
       maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
       httpOnly: true,
+      sameSite: 'lax', // blocks cross-site POSTs (CSRF mitigation)
+      secure: isProd, // HTTPS-only cookie in production
     },
   })
 );
