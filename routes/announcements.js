@@ -1,6 +1,7 @@
 const express = require('express');
 const db = require('../db');
 const { requireLogin, requireOfficer } = require('../middleware/auth');
+const { notifyMembers, siteUrl } = require('../notify');
 
 module.exports = function () {
   const router = express.Router();
@@ -27,6 +28,10 @@ module.exports = function () {
       title.trim(),
       body.trim(),
       req.session.user.id
+    );
+    notifyMembers(
+      `New announcement: ${title.trim()}`,
+      `${title.trim()}\n\n${body.trim()}\n\n${siteUrl('/announcements')}`.trim()
     );
     res.redirect('/announcements');
   });

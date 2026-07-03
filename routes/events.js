@@ -1,6 +1,7 @@
 const express = require('express');
 const db = require('../db');
 const { requireLogin, requireOfficer } = require('../middleware/auth');
+const { notifyMembers, siteUrl } = require('../notify');
 
 module.exports = function () {
   const router = express.Router();
@@ -47,6 +48,11 @@ module.exports = function () {
       event_date,
       location || '',
       req.session.user.id
+    );
+    const when = new Date(event_date).toLocaleString();
+    notifyMembers(
+      `New event: ${title.trim()}`,
+      `A new event has been posted:\n\n${title.trim()}\n${when}${location ? ' · ' + location : ''}\n\n${description || ''}\n\n${siteUrl('/events')}`.trim()
     );
     res.redirect('/events');
   });
