@@ -35,6 +35,7 @@ app.use('/', require('./routes/auth')());
 app.use('/events', require('./routes/events')());
 app.use('/resources', require('./routes/resources')());
 app.use('/announcements', require('./routes/announcements')());
+app.use('/mail', require('./routes/mail')());
 app.use('/admin', require('./routes/admin')());
 
 app.get('/', (req, res) => {

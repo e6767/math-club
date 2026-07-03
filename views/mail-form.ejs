@@ -1,0 +1,32 @@
+<%- include('partials/header', { title: 'Email members' }) %>
+
+<h1>Email all members</h1>
+
+<% if (!configured) { %>
+  <div class="error-box">
+    Email delivery isn't configured on the server yet, so sending is disabled.
+    Once an SMTP provider is set up, this form will send to every member.
+  </div>
+<% } %>
+<% if (error) { %><div class="error-box"><%= error %></div><% } %>
+<% if (sent) { %>
+  <div class="card">
+    <p><strong>Done.</strong> Sent to <%= sent.sent %> of <%= sent.sent + sent.failed %> member<%= (sent.sent + sent.failed) === 1 ? '' : 's' %><% if (sent.failed) { %> &mdash; <%= sent.failed %> failed<% } %>.</p>
+  </div>
+<% } %>
+
+<p class="meta">This will email <strong><%= recipientCount %></strong> member<%= recipientCount === 1 ? '' : 's' %>.</p>
+
+<form class="stack" method="POST" action="/mail/send">
+  <div>
+    <label for="subject">Subject</label>
+    <input type="text" id="subject" name="subject" value="<%= form.subject || '' %>" required />
+  </div>
+  <div>
+    <label for="message">Message</label>
+    <textarea id="message" name="message" rows="8" required><%= form.message || '' %></textarea>
+  </div>
+  <button class="btn btn-accent" type="submit"<%= configured ? '' : ' disabled' %>>Send to all members</button>
+</form>
+
+<%- include('partials/footer') %>
